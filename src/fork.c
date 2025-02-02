@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
+#include <fcntl.h>
 
 void forkWait() {
     printf("Hello, WSL!\n");
@@ -92,12 +93,65 @@ void closeStdout() {
     printf("This should print\n");
 }
 
+void forkPipe() {
+    int fd[2];
+    pipe(fd);
+
+    if (pipe(fd) == -1) {
+        perror("pipe failed");
+        exit(1);
+    }
+
+    pid_t pid1, pid2;
+    pid1 = fork();
+
+    if (pid1 < 0) {
+        fprintf(stderr, "fork failed\n");
+        exit(1);
+    } else if (pid1 == 0) {
+        // Child1
+        close(fd[0]); // Close unused read end
+        dup2(fd[1], STDOUT_FILENO); // Redirect stdout to pipe's write end
+        close(fd[1]); // Close original write end after duplication
+
+        // stdout now goes into the pipe
+        printf("Hello from child1!\n");
+        exit(0);
+    } else {
+        // Parent
+        pid2 = fork();
+        
+        if (pid2 < 0) {
+            fprintf(stderr, "second fork failed\n");
+            exit(1);
+        } else if (pid2 == 0) {
+            // Child2
+            close(fd[1]);
+            dup2(fd[0], STDIN_FILENO);
+            close(fd[0]);
+
+            char buffer[100];
+            while (fgets(buffer, sizeof(buffer), stdin) != NULL) {
+                printf("Child received: %s", buffer);
+            }
+            exit(0);
+        } else {
+            // Runs in the original parent process
+            close(fd[0]);
+            close(fd[1]);
+            wait(NULL);
+            wait(NULL);
+        }
+    }
+}
+
 int main() {
     // printf("Fork 1 starting...\n");
     //forkWait();
     // printf("Fork openFile starting...\n");
     // forkOpenFile();
     //execTest();
-    closeStdout();
+    //closeStdout();
+    forkPipe();
     return 0;
 }
