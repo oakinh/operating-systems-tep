@@ -1,5 +1,7 @@
 #include <stdlib.h>
 
+// Use gdb and valgrind to see the effects of the errors from the functions below
+
 void dereferenceNull() {
     int* ptr;
 
