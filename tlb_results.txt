@@ -1,0 +1,12 @@
+2 pages | Average elapsed time: 47 nanoseconds
+4 pages | Average elapsed time: 70 nanoseconds
+8 pages | Average elapsed time: 91 nanoseconds
+16 pages | Average elapsed time: 186 nanoseconds
+32 pages | Average elapsed time: 408 nanoseconds
+64 pages | Average elapsed time: 1335 nanoseconds
+128 pages | Average elapsed time: 5079 nanoseconds
+256 pages | Average elapsed time: 10083 nanoseconds
+512 pages | Average elapsed time: 15468 nanoseconds
+1024 pages | Average elapsed time: 33671 nanoseconds
+2048 pages | Average elapsed time: 72680 nanoseconds
+4096 pages | Average elapsed time: 185473 nanoseconds
